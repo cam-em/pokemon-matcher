@@ -7,7 +7,9 @@ const game = {
     'cardMatchCount': 0,
     'guesses': 0,
     'locked': false,
-    'gamesWon': 0
+    'gamesWon': 0,
+    'gamesLost': 0,
+    'gameWonBool': false,
 }
 
 
@@ -18,7 +20,12 @@ let cardMatchScore = htmlScores[0].childNodes[0]
 let guessesScore = htmlScores[1].childNodes[0]
 let gamesWonScore = htmlScores[2].childNodes[0]
 let gamesLossScore = htmlScores[3].childNodes[0]
+let modal = document.querySelector('#myModal')
+let span = document.getElementsByClassName('close')[0]
+let modalContent = document.querySelector('.modal-content')
+let winnerMessage = document.createElement('p')
 
+console.log(modalContent)
 
 function flipCard () {
 
@@ -94,14 +101,17 @@ function resetGame() {
     game.cardMatchCount = 0
     game.guesses = 0
     game.locked = false
+    game.gameWonBool = false
     
     cardMatchScore.data = 0
     guessesScore.data = 0
-
+    gamesLossScore.data = game.gamesLost
+    
     for(let card of cards) {
         card.classList.remove('turn')
     }
 
+    modalContent.removeChild(winnerMessage)
     addEventToCards()
 }
 
@@ -109,9 +119,14 @@ function resetGame() {
 function checkIfGameWon() {
     if(game.cardMatchCount >= 10) {
         console.log('You won!')
+        modalWinnerMessage()
         game.gamesWon++
+        game.gameWonBool = true
         gamesWonScore.data = game.gamesWon
-        resetGame()
+    }
+
+    if(game.gameWonBool) {
+        openModal()
     }
 }
 
@@ -123,10 +138,63 @@ function addEventToCards() {
     }
 }
 
+function closeModalBtns() {
+    span.addEventListener('click', ()=>{
+        modal.style.display = 'none'
+    })
+
+    window.addEventListener('click', (event)=>{
+        if (event.target == modal) {
+            modal.style.display = "none";
+          }
+    })
+}
+
+
+
+function openModal() {
+    modal.style.display = 'block'
+}
+
+function closeModal() {
+    modal.style.display = 'none'
+}
+
+
+function modalWinnerMessage() {
+
+    let textNode = document.createTextNode(`You won in ${game.guesses} moves! Would you like to play again?`)
+    winnerMessage.classList.add('black-text')
+    winnerMessage.appendChild(textNode)
+    modalContent.appendChild(winnerMessage)
+
+    continueGame()
+}
+
+function continueGame() {
+    let yesBtn = document.getElementById('yes')
+    let noBtn = document.getElementById('no')
+
+    yesBtn.addEventListener('click', () => {
+        resetGame()
+        closeModal()
+    })
+
+    noBtn.addEventListener('click', ()=>{
+        closeModal()
+    })
+}
+
 
 document.addEventListener('DOMContentLoaded', () =>{
     cards = document.querySelectorAll('.card')
-    document.querySelector('#reset').addEventListener('click', resetGame)
+
+    closeModalBtns()
+
+    document.querySelector('#reset').addEventListener('click', () => {
+        game.gamesLost++
+        resetGame()
+    })
 
     addEventToCards()
     
