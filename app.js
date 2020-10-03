@@ -10,10 +10,12 @@ const game = {
     'gamesWon': 0,
     'gamesLost': 0,
     'gameWonBool': false,
+    'timeout': true,
+    'gameLossValue': 50
 }
 
 
-let cards
+let cards = document.querySelectorAll('.card')
 const htmlScores = document.querySelectorAll('.score')
 
 let cardMatchScore = htmlScores[0].childNodes[0]
@@ -25,7 +27,8 @@ let span = document.getElementsByClassName('close')[0]
 let modalContent = document.querySelector('.modal-content')
 let winnerMessage = document.createElement('p')
 
-console.log(modalContent)
+console.log(cards)
+
 
 function flipCard () {
     checkIfLost()
@@ -60,6 +63,7 @@ function checkForMatch() {
     game.locked = true
     game.guesses++
     guessesScore.data = game.guesses
+    console.log('Hi')
 
     if(game.firstCardID === game.secondCardID) {
         game.firstCard.removeEventListener('click', flipCard)
@@ -79,19 +83,19 @@ function checkForMatch() {
         }
     }
 
-    setTimeout(() => {
-        checkIfGameWon()
-    }, 3000)
+    checkIfGameWon()
     
     console.log(game.guesses)
 }
 
+
 function checkIfLost() {
-    if(game.cardMatchCount >= 40) {
+    if(game.cardMatchCount >= game.gameLossValue) {
         openModal()
         modalLoserMessage()
     }
 }
+
 
 function resetCards() {
     game.firstCard = null
@@ -129,12 +133,10 @@ function checkIfGameWon() {
         modalWinnerMessage()
         game.gamesWon++
         game.gameWonBool = true
+        openModal()
         gamesWonScore.data = game.gamesWon
     }
 
-    if(game.gameWonBool) {
-        openModal()
-    }
 }
 
 
@@ -144,6 +146,7 @@ function addEventToCards() {
         card.addEventListener('click', flipCard)
     }
 }
+
 
 function closeModalBtns() {
     span.addEventListener('click', ()=>{
@@ -158,14 +161,15 @@ function closeModalBtns() {
 }
 
 
-
 function openModal() {
     modal.style.display = 'block'
 }
 
+
 function closeModal() {
     modal.style.display = 'none'
 }
+
  
 function modalLoserMessage() {
     let textNode = document.createTextNode(`You lost in ${game.guesses} moves! Would you like to play again?`)
@@ -187,6 +191,7 @@ function modalWinnerMessage() {
     continueGame()
 }
 
+
 function continueGame() {
     let yesBtn = document.getElementById('yes')
     let noBtn = document.getElementById('no')
@@ -202,9 +207,17 @@ function continueGame() {
 }
 
 
-document.addEventListener('DOMContentLoaded', () =>{
-    cards = document.querySelectorAll('.card')
+function shuffleCards() {
+    for(let card of cards) {
+        let randomIndex = Math.floor(Math.random() * 12)
+        card.style.order = randomIndex
+        //console.log(card)
+    }
+}
 
+
+document.addEventListener('DOMContentLoaded', () =>{
+    shuffleCards()
     closeModalBtns()
 
     document.querySelector('#reset').addEventListener('click', () => {
@@ -214,6 +227,4 @@ document.addEventListener('DOMContentLoaded', () =>{
 
     addEventToCards()
     
-
-
 })
