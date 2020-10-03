@@ -28,6 +28,7 @@ let winnerMessage = document.createElement('p')
 console.log(modalContent)
 
 function flipCard () {
+    checkIfLost()
 
     if(game.locked) {
         return;
@@ -85,6 +86,12 @@ function checkForMatch() {
     console.log(game.guesses)
 }
 
+function checkIfLost() {
+    if(game.cardMatchCount >= 40) {
+        openModal()
+        modalLoserMessage()
+    }
+}
 
 function resetCards() {
     game.firstCard = null
@@ -158,6 +165,15 @@ function openModal() {
 
 function closeModal() {
     modal.style.display = 'none'
+}
+ 
+function modalLoserMessage() {
+    let textNode = document.createTextNode(`You lost in ${game.guesses} moves! Would you like to play again?`)
+    winnerMessage.classList.add('black-text')
+    winnerMessage.appendChild(textNode)
+    modalContent.appendChild(winnerMessage)
+
+    continueGame()
 }
 
 
