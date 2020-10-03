@@ -215,7 +215,7 @@ function shuffleCards() {
 
 
 document.addEventListener('DOMContentLoaded', () =>{
-    shuffleCards()
+    //shuffleCards()
     closeModalBtns()
 
     document.querySelector('#reset').addEventListener('click', () => {
