@@ -63,7 +63,6 @@ function checkForMatch() {
     game.locked = true
     game.guesses++
     guessesScore.data = game.guesses
-    console.log('Hi')
 
     if(game.firstCardID === game.secondCardID) {
         game.firstCard.removeEventListener('click', flipCard)
@@ -97,6 +96,19 @@ function checkIfLost() {
 }
 
 
+function checkIfGameWon() {
+    if(game.cardMatchCount >= 10) {
+        console.log('You won!')
+        modalWinnerMessage()
+        game.gamesWon++
+        game.gameWonBool = true
+        openModal()
+        gamesWonScore.data = game.gamesWon
+    }
+
+}
+
+
 function resetCards() {
     game.firstCard = null
     game.secondCard = null
@@ -124,19 +136,6 @@ function resetGame() {
 
     modalContent.removeChild(winnerMessage)
     addEventToCards()
-}
-
-
-function checkIfGameWon() {
-    if(game.cardMatchCount >= 10) {
-        console.log('You won!')
-        modalWinnerMessage()
-        game.gamesWon++
-        game.gameWonBool = true
-        openModal()
-        gamesWonScore.data = game.gamesWon
-    }
-
 }
 
 
@@ -211,7 +210,6 @@ function shuffleCards() {
     for(let card of cards) {
         let randomIndex = Math.floor(Math.random() * 12)
         card.style.order = randomIndex
-        //console.log(card)
     }
 }
 
